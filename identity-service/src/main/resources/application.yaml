@@ -1,0 +1,25 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /identity
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/identity_service?createDatabaseIfNotExist=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    # password: ${SPRING_DATASOURCE_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  signerKey: "2majkBJHjJEkW9mh5Sm69UMwYvY0UBQGVUY+XXqz0+kYwE6GWTGmDlYbp9DEh7X9"
+  valid-duration: 1 # in hours
+  refreshable-duration: 3 # in hours
+
+app:
+  services:
+    customer: http://localhost:8082/customer
+    enterprise: http://localhost:8083/enterprise

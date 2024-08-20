@@ -1,0 +1,101 @@
+version: '3.4'
+
+services:
+  # docker image của discoveryservice
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+  apigatewayservice:
+    image: apigatewayservice
+    restart: always
+    build:
+      context: api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+  boockingservice:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - apigatewayservice
+    restart: always
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/booking_service?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+  customerservice:
+    image: customerservice
+    restart: always
+    build:
+      context: ./customer-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/customer_service?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - mysql
+      - apigatewayservice
+  enterpriceservice:
+    image: enterpriceservice
+    restart: always
+    build:
+      context: ./enterprise-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/enterprise_service?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - mysql
+      - apigatewayservice
+  eventservice:
+    image: eventservice
+    restart: always
+    build:
+      context: ./event-service
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/event_service?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - apigatewayservice
+      - mysql
+  identityservice:
+    image: identityservice
+    restart: always
+    build:
+      context: ./identity-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/identity_service?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - apigatewayservice
+      - mysql
+  frontendservice:
+    image: frontendservice
+    restart: always
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"

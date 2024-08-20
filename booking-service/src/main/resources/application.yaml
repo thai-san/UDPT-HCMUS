@@ -1,0 +1,21 @@
+server:
+  port: 8085
+  servlet:
+    context-path: /booking
+
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/booking_service?createDatabaseIfNotExist=true}
+    #    driverClassName: "com.mysql.cj.jdbc.Driver"
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    # password: ${SPRING_DATASOURCE_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+app:
+  services:
+    event: http://localhost:8084/event
